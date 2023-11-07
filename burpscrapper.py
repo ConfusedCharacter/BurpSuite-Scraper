@@ -1,3 +1,7 @@
+# !/usr/bin/python3
+# BurpSuite Scrapper v1.1
+# By ConfusedCharacter
+
 from xml.etree import ElementTree
 from typing import NamedTuple
 import argparse
