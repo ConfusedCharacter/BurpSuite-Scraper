@@ -13,6 +13,10 @@ The BurpSuite Request Converter is a powerful tool that allows you to convert Bu
 4. You can see the responses as comments in your code with `-c` argument.
 5. If the output is `json`, it will automatically be `pretty`.
 
+## Supported Programming Languages
+- Python
+- PHP
+
 ## Usage
 1. Start by launching the BurpSuite application.
 2. Export your requests from BurpSuite.
@@ -60,10 +64,6 @@ copy executable file to `/usr/bin/`
 sudo cp burpscraper /usr/bin/
 ```
 or you can make executable with `pyinstaller` and put it in `/usr/bin/`
-## Supported Programming Languages
-- Python
-- PHP
-
 
 ## Contribute to Our Project!
 
