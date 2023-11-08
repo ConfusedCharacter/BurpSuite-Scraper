@@ -26,7 +26,7 @@ The BurpSuite Request Converter is a powerful tool that allows you to convert Bu
 ## guide
 
 ```bash
-usage: burpscrapper [-h] [-f FILE] [-c COMMENT] [-l LANGUAGE] [-o OUTPUT]
+usage: burpscraper [-h] [-f FILE] [-c COMMENT] [-l LANGUAGE] [-o OUTPUT]
 
 [BurpSuite Scraper v1.1] Convert BrupSuite
 "XML" to programming language.
@@ -43,7 +43,7 @@ options:
 ```
 Example:
 ```bash
-python3 burpscrapper.py -f test/timeir.xml -o test/php_result.php -l php
+python3 burpscraper.py -f test/timeir.xml -o test/php_result.php -l php
 ```
 - [output example](https://github.com/ConfusedCharacter/BurpSuite-Scraper/blob/main/test/php_result.php)
 ## Add to Bash!
