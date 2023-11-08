@@ -1,5 +1,5 @@
 # !/usr/bin/python3
-# BurpSuite Scrapper v1.1
+# BurpSuite Scraper v1.1
 # By ConfusedCharacter
 
 from xml.etree import ElementTree
@@ -92,7 +92,7 @@ def extract_burp_data(xml_file:str):
 def add_comments(extracted:ExtractedData):
     source = ""
     source += "# !/usr/bin/python3\n"                                       # Source Comments.
-    source += "# BurpSuite Scrapper v{}\n".format(__version__)
+    source += "# BurpSuite Scraper v{}\n".format(__version__)
     source += "# By ConfusedCharacter\n\n"
     source += "# BurpSuite Filename: \"{}\"\n".format(extracted.burpFile)
     source += "# Time: \"{}\"\n".format(extracted.time)
@@ -166,7 +166,9 @@ def convert_to_py(extracted:ExtractedData,comment_response_data:bool = False):
 
 
     return source
-    
+
+def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
+    pass
 
 
 if __name__ == "__main__":
@@ -177,30 +179,35 @@ if __name__ == "__main__":
         del kernel32
     
     print(f"""{Colors.LIGHT_RED}
-  ____                   _____                                      
- |  _ \                 / ____|                                     
- | |_) |_   _ _ __ _ __| (___   ___ _ __ __ _ _ __  _ __   ___ _ __ 
- |  _ <| | | | '__| '_ \\___ \ / __| '__/ _` | '_ \| '_ \ / _ \ '__|
- | |_) | |_| | |  | |_) |___) | (__| | | (_| | |_) | |_) |  __/ |   
- |____/ \__,_|_|  | .__/_____/ \___|_|  \__,_| .__/| .__/ \___|_|   
-                  | |                        | |   | |              
-                  |_|                        |_|   |_|              
-
+  ____                   _____                                
+ |  _ \                 / ____|                               
+ | |_) |_   _ _ __ _ __| (___   ___ _ __ __ _ _ __   ___ _ __ 
+ |  _ <| | | | '__| '_ \\___ \ / __| '__/ _` | '_ \ / _ \ '__|
+ | |_) | |_| | |  | |_) |___) | (__| | | (_| | |_) |  __/ |   
+ |____/ \__,_|_|  | .__/_____/ \___|_|  \__,_| .__/ \___|_|   
+                  | |                        | |              
+                  |_|                        |_|              
+                  
                     By {Colors.BLUE}"ConfusedCharacter"
                     
 {Colors.END}""")
-    parser = argparse.ArgumentParser(description=f'[{Colors.BLUE}BurpSuite Scrapper{Colors.END} {Colors.CYAN}v{__version__}{Colors.END}] Convert {Colors.YELLOW}BrupSuite{Colors.END} "XML" to programming language.')
+    parser = argparse.ArgumentParser(description=f'[{Colors.BLUE}BurpSuite Scraper{Colors.END} {Colors.CYAN}v{__version__}{Colors.END}] Convert {Colors.YELLOW}BrupSuite{Colors.END} "XML" to programming language.')
     parser.add_argument('-f', '--file', help='Input BurpSuite XML File to convert')
     parser.add_argument('-c', '--comment', help='Comment Response data',default=False)
-    parser.add_argument('-l', '--language', help=f'Input language: {Colors.YELLOW}python{Colors.END}',default="python")
-    parser.add_argument('-o', '--output', help='Output file after convert',default="BurpScrapper_result.py")
+    parser.add_argument('-l', '--language', help=f'Input language: {Colors.YELLOW}python{Colors.END},{Colors.YELLOW}php{Colors.END}',default="python")
+    parser.add_argument('-o', '--output', help='Output file after convert',default="BurpScraper_result.py")
     args = parser.parse_args()
 
     if args.file:
         extracted = extract_burp_data(args.file)
         print(f"[{Colors.GREEN}+{Colors.END}] Reading \"{args.file}\"...")
-        source = convert_to_py(extracted,comment_response_data=args.comment)
-        print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"Python\"...")
+        if args.language.lower() == "python":
+            source = convert_to_py(extracted,comment_response_data=args.comment)
+            print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"Python\"...")
+        elif args.language.lower() == "python":
+            source = convert_to_py(extracted,comment_response_data=args.comment)
+            print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"PHP\"...")
+
         with open(args.output,"w") as file:
             file.write(source)
             file.close()
