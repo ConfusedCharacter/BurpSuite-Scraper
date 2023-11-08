@@ -50,7 +50,9 @@ python3 burpscraper.py -f test/timeir.xml -o test/php_result.php -l php
 You can download the executable file and place it in the bash path to use this tool more easily
 download it with wget
 ```bash
-wget https://github.com/ConfusedCharacter/BurpSuite-Scraper/releases/download/1.1/burpscraper_linux; mv burpscraper_linux burpscraper
+wget https://github.com/ConfusedCharacter/BurpSuite-Scraper/releases/download/1.1/burpscraper_linux
+mv burpscraper_linux burpscraper
+chmod +x burpscraper
 ```
 
 copy executable file to `/usr/bin/`
