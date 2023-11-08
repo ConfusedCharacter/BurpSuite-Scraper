@@ -168,9 +168,8 @@ def convert_to_py(extracted:ExtractedData,comment_response_data:bool = False):
     return source
 
 def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
-    source = add_comments(extracted)                                        # Add init comments to source.
-    source += "import requests\n\n"
-    source += "def MyRequest():\n\t"
+    source = "<?php\n"
+    source += add_comments(extracted,commentTag="//")                        # Add init comments to source.
 
     request = base64.b64decode(extracted.request.encode()).decode()         # Decoding base64 raw request data.
     response = base64.b64decode(extracted.response.encode()).decode()       # Decoding base64 raw response data.
@@ -189,7 +188,7 @@ def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
 
     request = request[2:]                                                   # Ignore Method, path and Host. example: "GET /json/ HTTP/1.1\nHost: www.google.com...".
     
-    source += "headers = {\n\t\t"
+    source += "$headers = array(\n\t"
     for header in request:
         if header == "":                                                    # Stop for loop if reach to request data.
             break
@@ -197,22 +196,28 @@ def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
             if ":" not in header:                                           # Continue if string is not header.
                 continue
             else:
-                key,value = header.split(": ")
-                source += "'{}': '{}',\n\t\t".format(key,value)             # Adding header "key" and "value"
+                source += "'{}',\n\t".format(header)                        # Adding header as array.
 
-    source += "}\n\t"                                                       # Finish adding header.
+    source += ");\n"                                                        # Finish adding header.
 
-    source += "response = requests.{}(\n\t\t".format(extracted.method)      # make request
-    source += "url='{}',\n\t\t".format(extracted.url)
-    source += "headers=headers,\n\t\t"
+    source += "$ch = curl_init();\n\n"
+    source += "curl_setopt($ch, CURLOPT_URL, '{}');\n".format(extracted.url)
+    source += "curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n"
+    source += "curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);\n"
+    source += "curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n"
+    if extracted.method == "post":
+        source += "curl_setopt($ch, CURLOPT_POST, 1);\n"
+    else:
+        source += "curl_setopt($ch, CURLOPT_POST, 0);\n"
 
     if request_data and extracted.method == "post":
         data = "\n".join(request[request.index("") + 1:])
-        source += "data='{}'\n\t)\n\n\t".format(data)
-    else:
-        source += ")\n\n\t"
+        source += "curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');\n".format(data)
+    
+    source += "$response = curl_exec($ch);\n"
+    source += "curl_close($ch);\n\n"                                        # end of curl.
+    source += "echo $response;\n\n"
 
-    source += "return response\n\n\t"
     if comment_response_data:                                               # Add post data if available.
         if response_data:
             response_raw = "\n".join(response[response.index("") + 1:])
@@ -220,15 +225,16 @@ def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
                 load_json = json.loads(response_raw)
                 pretty_json = json.dumps(load_json,indent=4)
                 pretty_json = pretty_json.splitlines()
-                comment_json = "\n".join(list(map(lambda line: "\t# "+line,pretty_json)))
-                source += "# Response:\n"
+                comment_json = "\n".join(list(map(lambda line: "// "+line,pretty_json)))
+                source += "// Response:\n"
                 source += comment_json
             except:
-                source += "# Response: {}\n".format(response_raw)
+                source += "// Response: {}\n".format(response_raw)
         else:
-            source += "# Response: None\n"
+            source += "// Response: None\n"
 
 
+    source += "\n?>"
     return source
 
 
@@ -265,8 +271,8 @@ if __name__ == "__main__":
         if args.language.lower() == "python":
             source = convert_to_py(extracted,comment_response_data=args.comment)
             print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"Python\"...")
-        elif args.language.lower() == "python":
-            source = convert_to_py(extracted,comment_response_data=args.comment)
+        elif args.language.lower() == "php":
+            source = convert_to_php(extracted,comment_response_data=args.comment)
             print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"PHP\"...")
 
         with open(args.output,"w") as file:
