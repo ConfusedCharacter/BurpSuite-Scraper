@@ -10,15 +10,37 @@ The BurpSuite Request Converter is a powerful tool that allows you to convert Bu
 1. BurpSuite Integration: Easily import requests from BurpSuite into the converter.
 2. Supported Programming Languages: Convert requests to code snippets in popular programming languages such as Python, PHP.
 3. Easy-to-Use: The converter has a simple and intuitive interface, making it user-friendly for both beginners and experienced developers.
+4. You can see the responses as comments in your code with `-c` argument.
+5. If the output is `json`, it will automatically be `pretty`.
 
 ## Usage
 1. Start by launching the BurpSuite application.
 2. Export your requests from BurpSuite.
- <img src="https://raw.githubusercontent.com/ConfusedCharacter/BurpSuite-Scraper/main/shot/2.png" alt="pic" width="500">
+ <img src="https://raw.githubusercontent.com/ConfusedCharacter/BurpSuite-Scraper/main/shot/2.png" alt="pic" width="400">
 
 4. Run script and choose the programming language you want to convert the request to.
 5. Copy the generated code snippet and integrate it into your project.
-   
+6. Result:
+<img src="https://raw.githubusercontent.com/ConfusedCharacter/BurpSuite-Scraper/main/shot/3.png" alt="pic" width="350">
+
+## guide
+
+```bash
+usage: burpscrapper [-h] [-f FILE] [-c COMMENT] [-l LANGUAGE] [-o OUTPUT]
+
+[BurpSuite Scraper v1.1] Convert BrupSuite
+"XML" to programming language.
+
+options:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Input BurpSuite XML File to convert
+  -c COMMENT, --comment COMMENT
+                        Comment Response data
+  -l LANGUAGE, --language LANGUAGE
+                        Input language: python,php
+  -o OUTPUT, --output OUTPUT
+                        Output file after convert
+```
 
 ## Supported Programming Languages
 - Python
