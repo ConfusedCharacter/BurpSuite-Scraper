@@ -4,7 +4,9 @@
 
 from xml.etree import ElementTree
 from typing import NamedTuple
+import platform
 import argparse
+import ctypes
 import base64
 import json
 
@@ -240,8 +242,8 @@ def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
 
 if __name__ == "__main__":
     # set Windows console in VT mode
-    if __import__("platform").system() == "Windows":
-        kernel32 = __import__("ctypes").windll.kernel32
+    if platform.system() == "Windows":
+        kernel32 = ctypes.windll.kernel32
         kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
         del kernel32
     
