@@ -42,6 +42,18 @@ options:
                         Output file after convert
 ```
 
+## Add to Bash!
+You can download the executable file and place it in the bash path to use this tool more easily
+download it with wget
+```bash
+wget ......
+```
+
+copy executable file to `/usr/bin/`
+```bash
+sudo cp burpscraper /usr/bin/
+```
+or you can make executable with `pyinstaller` and put it in `/usr/bin/`
 ## Supported Programming Languages
 - Python
 - PHP
