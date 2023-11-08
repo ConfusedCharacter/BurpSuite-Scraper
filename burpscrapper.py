@@ -89,18 +89,18 @@ def extract_burp_data(xml_file:str):
         url=url
     )
 
-def add_comments(extracted:ExtractedData):
+def add_comments(extracted:ExtractedData,commentTag="#"):
     source = ""
-    source += "# !/usr/bin/python3\n"                                       # Source Comments.
-    source += "# BurpSuite Scraper v{}\n".format(__version__)
-    source += "# By ConfusedCharacter\n\n"
-    source += "# BurpSuite Filename: \"{}\"\n".format(extracted.burpFile)
-    source += "# Time: \"{}\"\n".format(extracted.time)
-    source += "# Request url: \"{}\"\n".format(extracted.url)
-    source += "# Request method: \"{}\"\n".format(extracted.method.upper())
-    source += "# Request status: \"{}\"\n".format(extracted.status)
-    source += "# Base64 Raw Request: {}\n".format(extracted.request)
-    source += "# Base64 Raw Response: {}\n\n".format(extracted.response)
+    source += commentTag + " !/usr/bin/python3\n"                           # Source Comments.
+    source += commentTag + " BurpSuite Scraper v{}\n".format(__version__)
+    source += commentTag + " By ConfusedCharacter\n\n"
+    source += commentTag + " BurpSuite Filename: \"{}\"\n".format(extracted.burpFile)
+    source += commentTag + " Time: \"{}\"\n".format(extracted.time)
+    source += commentTag + " Request url: \"{}\"\n".format(extracted.url)
+    source += commentTag + " Request method: \"{}\"\n".format(extracted.method.upper())
+    source += commentTag + " Request status: \"{}\"\n".format(extracted.status)
+    source += commentTag + " Base64 Raw Request: {}\n".format(extracted.request)
+    source += commentTag + " Base64 Raw Response: {}\n\n".format(extracted.response)
     return source
 
 def convert_to_py(extracted:ExtractedData,comment_response_data:bool = False):
@@ -168,7 +168,68 @@ def convert_to_py(extracted:ExtractedData,comment_response_data:bool = False):
     return source
 
 def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
-    pass
+    source = add_comments(extracted)                                        # Add init comments to source.
+    source += "import requests\n\n"
+    source += "def MyRequest():\n\t"
+
+    request = base64.b64decode(extracted.request.encode()).decode()         # Decoding base64 raw request data.
+    response = base64.b64decode(extracted.response.encode()).decode()       # Decoding base64 raw response data.
+    
+    response = response.splitlines()
+    request = request.splitlines()
+    if request[-1] == "":                                                   # To define whether the request has data or not.
+        request_data = False
+    else:
+        request_data = True
+    
+    if response[-1] == "":                                                  # To define whether the response has data or not.
+        response_data = False
+    else:
+        response_data = True
+
+    request = request[2:]                                                   # Ignore Method, path and Host. example: "GET /json/ HTTP/1.1\nHost: www.google.com...".
+    
+    source += "headers = {\n\t\t"
+    for header in request:
+        if header == "":                                                    # Stop for loop if reach to request data.
+            break
+        else:
+            if ":" not in header:                                           # Continue if string is not header.
+                continue
+            else:
+                key,value = header.split(": ")
+                source += "'{}': '{}',\n\t\t".format(key,value)             # Adding header "key" and "value"
+
+    source += "}\n\t"                                                       # Finish adding header.
+
+    source += "response = requests.{}(\n\t\t".format(extracted.method)      # make request
+    source += "url='{}',\n\t\t".format(extracted.url)
+    source += "headers=headers,\n\t\t"
+
+    if request_data and extracted.method == "post":
+        data = "\n".join(request[request.index("") + 1:])
+        source += "data='{}'\n\t)\n\n\t".format(data)
+    else:
+        source += ")\n\n\t"
+
+    source += "return response\n\n\t"
+    if comment_response_data:                                               # Add post data if available.
+        if response_data:
+            response_raw = "\n".join(response[response.index("") + 1:])
+            try:
+                load_json = json.loads(response_raw)
+                pretty_json = json.dumps(load_json,indent=4)
+                pretty_json = pretty_json.splitlines()
+                comment_json = "\n".join(list(map(lambda line: "\t# "+line,pretty_json)))
+                source += "# Response:\n"
+                source += comment_json
+            except:
+                source += "# Response: {}\n".format(response_raw)
+        else:
+            source += "# Response: None\n"
+
+
+    return source
 
 
 if __name__ == "__main__":
