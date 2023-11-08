@@ -41,7 +41,10 @@ options:
   -o OUTPUT, --output OUTPUT
                         Output file after convert
 ```
-
+Example:
+```bash
+python3 burpscrapper.py -f test/timeir.xml -o test/php_result.php -l php
+```
 ## Add to Bash!
 You can download the executable file and place it in the bash path to use this tool more easily
 download it with wget
