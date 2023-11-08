@@ -45,7 +45,7 @@ Example:
 ```bash
 python3 burpscrapper.py -f test/timeir.xml -o test/php_result.php -l php
 ```
-- [output example](https://raw.githubusercontent.com/ConfusedCharacter/BurpSuite-Scraper/main/test/php_result.php)
+- [output example](https://github.com/ConfusedCharacter/BurpSuite-Scraper/blob/main/test/php_result.php)
 ## Add to Bash!
 You can download the executable file and place it in the bash path to use this tool more easily
 download it with wget
