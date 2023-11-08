@@ -274,7 +274,8 @@ if __name__ == "__main__":
         elif args.language.lower() == "php":
             source = convert_to_php(extracted,comment_response_data=args.comment)
             print(f"[{Colors.GREEN}+{Colors.END}] Converting to \"PHP\"...")
-
+            if args.output == "BurpScraper_result.py": args.output = "BurpScraper_result.php"
+        
         with open(args.output,"w") as file:
             file.write(source)
             file.close()
