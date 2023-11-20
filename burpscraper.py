@@ -162,7 +162,8 @@ def convert_to_py(extracted:ExtractedData,comment_response_data:bool = False):
                 source += "# Response:\n"
                 source += comment_json
             except:
-                source += "# Response: {}\n".format(response_raw)
+                comment_response = list(map(lambda line: f"# {line}\n",response_raw.splitlines()))
+                source += "# Response: \n" + comment_response
         else:
             source += "# Response: None\n"
 
@@ -231,7 +232,8 @@ def convert_to_php(extracted:ExtractedData,comment_response_data:bool = False):
                 source += "// Response:\n"
                 source += comment_json
             except:
-                source += "// Response: {}\n".format(response_raw)
+                comment_response = list(map(lambda line: f"// {line}\n",response_raw.splitlines()))
+                source += "// Response: \n" + comment_response
         else:
             source += "// Response: None\n"
 
